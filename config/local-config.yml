@@ -1,0 +1,8 @@
+server:
+  port: 8000
+db:
+  password: password
+  user: root
+  database: merge
+  host: 127.0.0.1
+  post: 3306
