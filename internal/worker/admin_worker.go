@@ -9,6 +9,15 @@ import (
 	"github.com/merge/shopping-card/internal/store"
 )
 
+// AdminWorker is an interface that defines the methods for admin operations
+type IAdminWorker interface {
+	// DisableUser disables a user by their ID and sends a message
+	DisableUser(gctx *gin.Context, userID int, message string) (interface{}, error)
+
+	// AddItem adds a new item to the store with the given details
+	AddItem(gctx *gin.Context, name string, desc string, quantity uint, price uint) (interface{}, error)
+}
+
 type AdminWorker struct {
 	userStore store.UserStore
 	itemStore store.ItemStore

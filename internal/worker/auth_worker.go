@@ -10,6 +10,18 @@ import (
 	"github.com/merge/shopping-card/pkg/utils/authutils"
 )
 
+// AuthWorkerInterface is an interface that defines methods for managing user authentication operations.
+type IAuthWorker interface {
+
+	// Login authenticates a user with their email and password and generates access and refresh tokens.
+	// It returns a SessionResponse containing the tokens or an error if the authentication fails.
+	Login(ctx *gin.Context, email string, password string) (interface{}, error)
+
+	// Signup creates a new user account with the provided email and password and generates access and refresh tokens.
+	// It returns a SessionResponse containing the tokens or an error if the user creation fails.
+	Signup(ctx *gin.Context, email string, password string) (interface{}, error)
+}
+
 type AuthWorker struct {
 	userStore        store.UserStore
 	accessTokenStore store.AccessTokenStore
@@ -49,7 +61,7 @@ func (a *AuthWorker) Login(ctx *gin.Context, email string, password string) (int
 		Active:       true,
 		UserID:       user.UserID,
 	}
-	
+
 	if err := a.accessTokenStore.Save(ctx, at); err != nil {
 		return nil, apierr.ErrResourceConflict.WithMessagef("Failed to Sign In")
 	}
@@ -93,7 +105,7 @@ func (a *AuthWorker) Signup(ctx *gin.Context, email string, password string) (in
 		Active:       true,
 		UserID:       user.UserID,
 	}
-	print("1 hello")
+
 	if err := a.accessTokenStore.Save(ctx, at); err != nil {
 		return nil, apierr.ErrResourceConflict.WithMessagef("Failed to Sign In")
 	}

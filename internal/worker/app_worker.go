@@ -7,6 +7,21 @@ import (
 	"github.com/merge/shopping-card/internal/store"
 )
 
+// AppWorker is an interface that defines the methods for app operations
+type IAppWorker interface {
+	// ListAllItems returns all the items in the store
+	ListAllItems(gctx *gin.Context) (interface{}, error)
+
+	// ListCart returns the items in the user's cart
+	ListCart(gctx *gin.Context) (interface{}, error)
+
+	// AddToCart adds an item to the user's cart with the given quantity
+	AddToCart(gctx *gin.Context, itemId string, quantity uint) (interface{}, error)
+
+	// RemoveItemFromCart removes an item from the user's cart with the given quantity
+	RemoveItemFromCart(gctx *gin.Context, itemId string, quantity uint) (interface{}, error)
+}
+
 type AppWorker struct {
 	cartCacheStore store.CartCacheStore
 	itemStore      store.ItemStore
@@ -74,7 +89,7 @@ func (app *AppWorker) RemoveItemFromCart(gctx *gin.Context, itemId string, quant
 	userId := gctx.Value("userId")
 	userIdStr, _ := userId.(string)
 
-	if err := app.cartCacheStore.RemoveById(gctx,itemId,userIdStr); err != nil {
+	if err := app.cartCacheStore.RemoveById(gctx, itemId, userIdStr); err != nil {
 		return nil, apierr.ErrInternalServerError.WithMessage("unable to process request at the moment")
 	}
 
